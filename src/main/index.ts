@@ -69,7 +69,7 @@ function runnerDeps(store: Store, auth: NexusAuth, nexusWindow: NexusWindow, use
         title,
         properties: ['openFile'],
         filters: [
-          { name: 'Mod archives', extensions: ['zip', '7z', 'rar'] },
+          { name: 'Mod archives', extensions: ['zip', '7z'] },
           { name: 'All files', extensions: ['*'] },
         ],
       };

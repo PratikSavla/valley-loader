@@ -9,7 +9,6 @@ files:
   - package.json
 asarUnpack:
   - node_modules/7zip-bin/**
-  - node_modules/node-unrar-js/**/*.wasm
 afterPack: scripts/after-pack.cjs
 mac:
   target:

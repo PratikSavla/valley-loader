@@ -1,10 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-// Archive extraction: zip/7z via bundled 7za (7zip-bin), rar via node-unrar-js. Pure Node.
+// Archive extraction: zip/7z via bundled 7za (7zip-bin). RAR is detected but not opened (see UnsupportedArchiveError). Pure Node.
 import { mkdir, mkdtemp, open, rm } from 'node:fs/promises';
 import { basename, dirname, join, resolve } from 'node:path';
 import { path7za } from '7zip-bin';
 import { extract7z, list7z } from './archive-7z';
-import { extractRar } from './archive-rar';
 import { assertNoSymlinks, ensureExecutable, moveSelected, normalizeEntryPath, pathKey } from './archive-safety';
 
 export { ensureExecutable, normalizeEntryPath } from './archive-safety';
@@ -95,6 +94,17 @@ function toFilter(onlyPaths: string[] | undefined): Set<string> | undefined {
  * special files), then moved into destDir, so a rejected archive leaves destDir untouched.
  * An empty `onlyPaths` array is treated like no filter.
  */
+/** The archive is a format Valley Loader deliberately doesn't open (RAR: its decoder's license is AGPL-incompatible). */
+export class UnsupportedArchiveError extends Error {
+  constructor(
+    readonly kind: 'rar',
+    readonly archivePath: string,
+  ) {
+    super(`${basename(archivePath)} is a RAR archive. Valley Loader only opens .zip and .7z files.`);
+    this.name = 'UnsupportedArchiveError';
+  }
+}
+
 export async function extractArchive(
   archivePath: string,
   destDir: string,
@@ -103,15 +113,15 @@ export async function extractArchive(
   const name = basename(archivePath);
   const kind = await detectArchiveKind(archivePath);
   if (kind === 'unknown') {
-    throw new Error(`Unsupported or corrupt archive ${name}: not a zip, 7z or rar file`);
+    throw new Error(`Unsupported or corrupt archive ${name}: not a zip or 7z file`);
   }
+  if (kind === 'rar') throw new UnsupportedArchiveError('rar', archivePath);
   const only = toFilter(opts?.onlyPaths);
   const dest = resolve(destDir);
   await mkdir(dest, { recursive: true });
   const staging = await mkdtemp(join(dirname(dest), `.${basename(dest)}.extract-`));
   try {
-    if (kind === 'rar') await extractRar(archivePath, staging, only);
-    else await extractWith7z(kind, archivePath, staging);
+    await extractWith7z(kind, archivePath, staging);
     await assertNoSymlinks(staging);
     await moveSelected(staging, dest, only);
   } catch (err) {

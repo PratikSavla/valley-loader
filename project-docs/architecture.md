@@ -53,7 +53,8 @@ Each collection gets its own Mods folder at `~/Library/Application Support/Valle
    - **Fallback:** register `nxm` with the OS (electron-builder `protocols` plus the `open-url` event) so Slow download clicks in Safari or Chrome also reach the app. This covers the case where Nexus's login blocks the embedded window.
 5. **Download and install in the background** (up to 3 downloads at once):
    - Check the md5 against `source.md5` and `fileSize`.
-   - Extract the archive: `7zip-bin` handles zip and 7z, `node-unrar-js` (WASM) handles rar.
+   - Extract the archive: `7zip-bin` handles zip and 7z.
+   - RAR is detected and refused (`UnsupportedArchiveError`). The mod becomes `manual` with `needsRepack`, and the user re-zips it and picks the `.zip`. User-picked files skip the collection md5 check; patch CRCs still guard content. RAR decoders contain RARLAB's UnRAR code, which is AGPL-incompatible.
    - Run the Stardew installer rules.
    - Copy files in phase/rule order so later mods win conflicts.
 6. **Resume.** Queue state is saved after every step, so the user can quit at mod 40 and continue later. Download keys expire, so mods that were caught but never downloaded go back to "needs click".
@@ -117,7 +118,7 @@ nexus-app/
 │   ├── collection/resolve.ts    URL → slug → revision → archive → parsed collection
 │   ├── collection/plan.ts       phases, modRules ordering, skip/bundle/optional
 │   ├── download/queue.ts        concurrent downloads, md5 verify, persistence
-│   ├── install/archive.ts       7z/zip/rar extraction (+ hashes filter)
+│   ├── install/archive.ts       zip/7z extraction (RAR detected and refused)
 │   ├── install/stardew.ts       manifest/Content/SMAPI detection → file ops
 │   ├── install/profile.ts       profile dirs, files.json ownership, conflict order
 │   └── game/{detect,launch}.ts  game path + SMAPI version, launch with --mods-path

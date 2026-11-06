@@ -9,7 +9,8 @@ import type { RateLimit } from '../../src/main/nexus/api';
 import { Runner } from '../../src/main/install/runner';
 import type { CapturedDownload, ModFileUrlArgs, NexusWindowLike, ShowModArgs } from '../../src/main/install/runner-types';
 import { Store } from '../../src/main/state/store';
-import { build7zaArchive, makeTempDir, type TreeSpec } from './archive-fixtures';
+import { join } from 'node:path';
+import { build7zaArchive, makeTempDir, writeRawRar, type TreeSpec } from './archive-fixtures';
 import { naivePatch } from './bsdiff-fixtures';
 
 export const CDN = 'https://cdn.test';
@@ -116,9 +117,19 @@ function addCuratorEdits(mods: Record<string, unknown>[], collectionTree: TreeSp
 }
 
 /** SMAPI, a config mod (Beta, listed first but ordered after Alpha), a bundled folder, Alpha, optional Gamma. */
-export async function buildFixtures(opts: { curatorEdits?: boolean } = {}): Promise<Fixtures> {
+/** Alpha's Nexus download as a RAR archive (served under the same .zip URL, as Nexus would). */
+async function addRarAlpha(files: Map<string, Buffer>): Promise<Buffer> {
+  const path = join(await makeTempDir('vl-rar-'), 'alpha.rar');
+  await writeRawRar(path, [{ name: 'Alpha/manifest.json', data: manifest('Alpha') }]);
+  const buf = await readFile(path);
+  files.set(`${CDN}/101-1001.zip`, buf);
+  return buf;
+}
+
+export async function buildFixtures(opts: { curatorEdits?: boolean; rarAlpha?: boolean } = {}): Promise<Fixtures> {
   const files = new Map<string, Buffer>();
-  const alpha = await addArchive(files, '101-1001.zip', { 'Alpha/manifest.json': manifest('Alpha'), 'Alpha/config.json': 'alpha-default' }, 'zip');
+  const alphaTree = { 'Alpha/manifest.json': manifest('Alpha'), 'Alpha/config.json': 'alpha-default' };
+  const alpha = opts.rarAlpha === true ? await addRarAlpha(files) : await addArchive(files, '101-1001.zip', alphaTree, 'zip');
   const beta = await addArchive(files, '102-2002.zip', { 'Alpha/config.json': 'beta-config', 'Gamma/config.json': 'beta-config' }, 'zip');
   const gamma = await addArchive(files, '103-3003.zip', { 'Gamma/manifest.json': manifest('Gamma'), 'Gamma/gamma.txt': 'g' }, 'zip');
   const md5 = { alpha: hash(alpha), beta: hash(beta), gamma: hash(gamma) };
@@ -191,7 +202,10 @@ export async function settleHarnesses(): Promise<void> {
   }
 }
 
-export async function makeHarness(fx: Fixtures, opts: { premium?: boolean; userData?: string } = {}): Promise<Harness> {
+export async function makeHarness(
+  fx: Fixtures,
+  opts: { premium?: boolean; userData?: string; pickArchive?: (title: string) => Promise<string | undefined> } = {},
+): Promise<Harness> {
   const userData = opts.userData ?? (await makeTempDir('vl-runner-'));
   const store = await Store.open(userData, { saveDelayMs: 5, emitIntervalMs: 0 });
   store.setTransient({ hasApiKey: true, user: { ...USER, isPremium: opts.premium === true }, game: GAME });
@@ -202,7 +216,7 @@ export async function makeHarness(fx: Fixtures, opts: { premium?: boolean; userD
   const steam = { running: false, opened: 0 };
   const runner = new Runner({
     store, userDataDir: userData, client: () => client, nexusWindow: win, fetchImpl, home: userData,
-    pickArchive: async () => undefined,
+    pickArchive: opts.pickArchive ?? (async () => undefined),
     showItemInFolder: () => undefined,
     openSteam: async () => {
       steam.opened += 1;

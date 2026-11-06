@@ -27,6 +27,9 @@ Vortex, the official Nexus mod manager, only runs on Windows. Valley Loader is a
   - the `nxm://` link handler
 
   Every failing check comes with step-by-step fix instructions.
+- **Archive formats.** `.zip` and `.7z` are installed automatically.
+  - A mod packed as `.rar` is marked **Needs a file**, with steps to re-pack it: unpack it in Finder, choose **Compress**, then **Pick file…**.
+  - RAR is left out because its decoder's license is incompatible with the AGPL.
 - **Resumable.** Quit partway through and continue later. Downloaded archives are cached and checked against the collection's md5.
 - **Collection updates.** Valley Loader notices when the curator publishes a new revision and shows what changed: added, changed and removed mods, how many clicks the update needs, and SMAPI requirements. You choose when to update.
 
@@ -50,7 +53,7 @@ Valley Loader never scripts clicks on the Nexus website or scrapes download link
 
 ## Install
 
-Download `Valley-Loader-<version>-arm64-mac.zip` from the [Releases](https://github.com/pratiksavla/valley-loader/releases) page, unzip it and move **Valley Loader.app** to Applications.
+Download `Valley-Loader-<version>-arm64-mac.zip` from the [Releases](https://github.com/PratikSavla/valley-loader/releases) page, unzip it and move **Valley Loader.app** to Applications.
 
 Release builds are ad-hoc signed, not notarized, so macOS blocks the first launch. Allow it in one of two ways:
 

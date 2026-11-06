@@ -10,9 +10,10 @@ Valley Loader is licensed under the GNU AGPL v3 (see [LICENSE](LICENSE)). The pa
 | [React](https://github.com/facebook/react), React DOM | MIT | |
 | [zod](https://github.com/colinhacks/zod) | MIT | |
 | [7zip-bin](https://github.com/develar/7zip-bin) | MIT (the wrapper package) | Ships the `7za` executable from **p7zip 16.02**, licensed under the GNU LGPL v2.1 or later. Valley Loader runs `7za` as a separate program. p7zip source code: <https://sourceforge.net/projects/p7zip/files/p7zip/16.02/>. |
-| [node-unrar-js](https://github.com/YuJianrong/node-unrar.js) | MIT (the JavaScript wrapper) | Contains RARLAB's **UnRAR** source compiled to WebAssembly. UnRAR is distributed under the [UnRAR license](https://www.rarlab.com/license.htm), which allows free use and redistribution but forbids using the code to re-create the RAR compression algorithm. The Free Software Foundation considers this license incompatible with the GPL family. Valley Loader uses it only to extract `.rar` mod archives. |
 
 ## Not bundled
+
+**RAR support is intentionally left out.** The only RAR decoders available contain RARLAB's UnRAR code. Its license is incompatible with the AGPL. Valley Loader recognises `.rar` downloads and asks the user to re-pack them as `.zip`.
 
 These tools are used only during development and are never shipped in the app: TypeScript, Vite, electron-vite, electron-builder, ESLint, typescript-eslint and Vitest.
 

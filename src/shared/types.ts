@@ -100,6 +100,8 @@ export interface PlannedMod {
   progress?: { received: number; total: number };
   /** Non-fatal notes shown in the UI (FOMOD choices ignored, root Content mod, ...). */
   warnings: string[];
+  /** The download is a RAR archive (not supported): the user re-packs it as .zip and picks that file. */
+  needsRepack?: boolean;
   /** Folder names this mod deployed under Mods/. */
   installedFolders?: string[];
 }

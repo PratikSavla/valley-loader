@@ -54,6 +54,7 @@ const plannedModSchema = z.object({
   error: z.string().optional(),
   warnings: z.array(z.string()).default([]),
   installedFolders: z.array(z.string()).optional(),
+  needsRepack: z.boolean().optional(),
 });
 
 const diffSchema = z.object({

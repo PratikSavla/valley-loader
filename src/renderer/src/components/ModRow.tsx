@@ -53,7 +53,8 @@ function ModNotes({ mod }: { mod: PlannedMod }) {
 /** One row of the mod table. All author-supplied text is rendered as plain text. */
 export function ModRow({ slug, mod, position }: { slug: string; mod: PlannedMod; position: number }) {
   const { run } = useActions();
-  const canPick = FILE_PICKABLE.has(mod.sourceType) && mod.status !== 'installed' && mod.selected;
+  // RAR downloads (needsRepack) are re-zipped by the user and picked from disk like a manual mod.
+  const canPick = (FILE_PICKABLE.has(mod.sourceType) || mod.needsRepack === true) && mod.status !== 'installed' && mod.selected;
   // SMAPI is never downloaded: its row only says whether the installed SMAPI is new enough, so "retry" re-checks it.
   const smapiOutdated = mod.modId === SMAPI_MOD_ID && mod.status === 'manual';
   const canRetry = mod.status === 'failed' || smapiOutdated;

@@ -7,8 +7,7 @@ const alias = { '@shared': resolve('src/shared') };
 
 export default defineConfig({
   main: {
-    // Keeps package.json dependencies (7zip-bin, node-unrar-js, zod) external: 7zip-bin ships a native
-    // binary and node-unrar-js must load its CommonJS build (which reads unrar.wasm from its own folder).
+    // Keeps package.json dependencies (7zip-bin, zod) external: 7zip-bin ships a native binary that must stay on disk.
     build: { externalizeDeps: true },
     resolve: { alias },
   },

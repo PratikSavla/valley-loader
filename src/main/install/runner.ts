@@ -176,9 +176,10 @@ export class Runner {
     const path = await this.deps.pickArchive(`Choose the downloaded archive for ${mod.name}`);
     if (path === undefined) return;
     if (!mod.selected) store.updateMod(slug, key, { selected: true });
-    await installArchive(this.#ctx, slug, key, path);
+    await installArchive(this.#ctx, slug, key, path, { userPicked: true });
     const after = store.requireMod(slug, key);
     if (after.status === 'failed') throw new Error(after.error ?? `Could not install ${mod.name}`);
+    if (after.needsRepack === true) throw new Error('That file is a .rar archive too. Unpack it, compress the folder to a .zip, then pick the .zip.');
     if (store.transient.awaitingClick?.key === key) await advanceCursor(this.#ctx, slug);
     this.#checkDone(slug);
   }

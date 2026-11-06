@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-only
-import { chmod, copyFile, lstat, readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { chmod, copyFile, readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { afterAll, describe, expect, it } from 'vitest';
 import {
@@ -10,6 +10,7 @@ import {
   normalizeEntryPath,
   sevenZipPath,
   toUnpackedPath,
+  UnsupportedArchiveError,
 } from '../src/main/install/archive';
 import { parseSltListing } from '../src/main/install/archive-7z';
 import {
@@ -178,39 +179,27 @@ describe('extractArchive', () => {
     const root = await makeTempDir();
     const file = join(root, 'mod.rar');
     await writeFile(file, 'not an archive');
-    await expect(extractArchive(file, join(root, 'out'))).rejects.toThrow(/not a zip, 7z or rar/);
+    await expect(extractArchive(file, join(root, 'out'))).rejects.toThrow(/not a zip or 7z file/);
   });
 });
 
 describe('extractArchive (rar)', () => {
-  it('extracts files and honours onlyPaths', async () => {
+  it('refuses RAR archives with UnsupportedArchiveError and writes nothing', async () => {
     const root = await makeTempDir();
     const archive = join(root, 'mod.rar');
-    await writeRawRar(archive, [
-      { name: 'Mod/manifest.json', data: '{}' },
-      { name: 'Mod/extra.txt', data: 'extra' },
-    ]);
-    await extractArchive(archive, join(root, 'all'));
-    expect(await listRecursive(join(root, 'all'))).toEqual(['Mod/extra.txt', 'Mod/manifest.json']);
-    await extractArchive(archive, join(root, 'some'), { onlyPaths: ['MOD/MANIFEST.JSON'] });
-    expect(await listRecursive(join(root, 'some'))).toEqual(['Mod/manifest.json']);
-    expect((await lstat(join(root, 'some/Mod/manifest.json'))).isFile()).toBe(true);
+    await writeRawRar(archive, [{ name: 'Mod/manifest.json', data: '{}' }]);
+    const err = await extractArchive(archive, join(root, 'out')).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(UnsupportedArchiveError);
+    expect((err as UnsupportedArchiveError).kind).toBe('rar');
+    expect((err as UnsupportedArchiveError).archivePath).toBe(archive);
+    expect((err as Error).message).toMatch(/mod\.rar is a RAR archive.*only opens \.zip and \.7z/);
+    expect((await readdir(root)).sort()).toEqual(['mod.rar']);
   });
 
-  it('handles Windows-created rar entries with backslash separators', async () => {
+  it('detects RAR by content even when the file is named .zip', async () => {
     const root = await makeTempDir();
-    const archive = join(root, 'win.rar');
-    await writeRawRar(archive, [{ name: 'Mod\\sub\\a.txt', data: 'win' }], 2);
-    await extractArchive(archive, join(root, 'out'));
-    expect(await readFile(join(root, 'out/Mod/sub/a.txt'), 'utf8')).toBe('win');
-  });
-
-  it('rejects traversal entries before writing anything', async () => {
-    const root = await makeTempDir();
-    const archive = join(root, 'bad.rar');
-    await writeRawRar(archive, [{ name: 'ok.txt', data: 'ok' }, { name: '../evil.txt', data: 'x' }]);
-    await expect(extractArchive(archive, join(root, 'out'))).rejects.toThrow(/Unsafe archive entry/);
-    expect(await readdir(join(root, 'out'))).toEqual([]);
-    expect((await readdir(root)).sort()).toEqual(['bad.rar', 'out']);
+    const archive = join(root, 'disguised.zip');
+    await writeRawRar(archive, [{ name: 'a.txt', data: 'a' }]);
+    await expect(extractArchive(archive, join(root, 'out'))).rejects.toBeInstanceOf(UnsupportedArchiveError);
   });
 });

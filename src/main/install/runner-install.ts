@@ -4,7 +4,7 @@ import { cp, mkdir, mkdtemp, rm, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { compareVersions } from '../game/detect';
 import { md5File } from '../download/queue';
-import { extractArchive } from './archive';
+import { UnsupportedArchiveError, extractArchive } from './archive';
 import { Profile } from './profile';
 import { SMAPI_BUNDLED_KEY } from './smapi-bundled';
 import { analyzeExtracted, type InstallAnalysis } from './stardew';
@@ -67,7 +67,7 @@ async function applyAnalysis(ctx: RunnerCtx, slug: string, key: string, analysis
   await redeploy(ctx, slug, key);
   const now = ctx.store.requireMod(slug, key).warnings.filter((w) => w !== LOOSE_FILES_WARNING);
   const warnings = analysis.kind === 'fallback' && folders.length === 0 ? [...now, LOOSE_FILES_WARNING] : now;
-  ctx.store.updateMod(slug, key, { status: 'installed', installedFolders: folders, warnings, error: undefined, progress: undefined });
+  ctx.store.updateMod(slug, key, { status: 'installed', installedFolders: folders, warnings, error: undefined, progress: undefined, needsRepack: undefined });
 }
 
 /**
@@ -83,7 +83,23 @@ async function verifyBeforeExtract(ctx: RunnerCtx, slug: string, key: string, ar
   }
 }
 
-async function extractAndApply(ctx: RunnerCtx, slug: string, key: string, archivePath: string): Promise<void> {
+/** Step-by-step help shown on a mod whose download is a RAR archive. */
+export function repackInstructions(archivePath: string): string {
+  return (
+    `This mod is packed as a .rar file, which Valley Loader can't open. To install it: ` +
+    `1. Open the downloaded file in Finder (${archivePath}); if macOS can't open it, use The Unarchiver from the App Store. ` +
+    `2. Right-click the unpacked folder and choose Compress to make a .zip. ` +
+    `3. Press "Pick file…" here and choose that .zip.`
+  );
+}
+
+function markNeedsRepack(ctx: RunnerCtx, slug: string, key: string, err: UnsupportedArchiveError): void {
+  console.warn(`[runner] ${slug} / ${key}: ${err.message}`);
+  if (ctx.store.getMod(slug, key) === undefined) return;
+  ctx.store.updateMod(slug, key, { status: 'manual', needsRepack: true, error: repackInstructions(err.archivePath), progress: undefined });
+}
+
+async function extractAndApply(ctx: RunnerCtx, slug: string, key: string, archivePath: string, userPicked: boolean): Promise<void> {
   await mkdir(ctx.paths.tmpDir, { recursive: true });
   const work = await mkdtemp(join(ctx.paths.tmpDir, 'install-'));
   try {
@@ -92,7 +108,8 @@ async function extractAndApply(ctx: RunnerCtx, slug: string, key: string, archiv
     if ((await stat(archivePath)).isDirectory()) {
       await cp(archivePath, out, { recursive: true, verbatimSymlinks: true });
     } else {
-      await verifyBeforeExtract(ctx, slug, key, archivePath);
+      // A file the user picked themselves (e.g. a re-zipped RAR) can't match the collection's md5.
+      if (!userPicked) await verifyBeforeExtract(ctx, slug, key, archivePath);
       await extractArchive(archivePath, out);
     }
     // Curator edits (exact file list, binary patches) apply to the download as extracted, before the analyzer.
@@ -109,7 +126,7 @@ async function extractAndApply(ctx: RunnerCtx, slug: string, key: string, archiv
  * Installs one archive (or an already-unpacked folder, for bundled mods) for a mod. Never throws: failures mark the mod failed with a readable message.
  * Skips (status 'skipped') when the mod was deselected while it was downloading.
  */
-export function installArchive(ctx: RunnerCtx, slug: string, key: string, archivePath: string): Promise<void> {
+export function installArchive(ctx: RunnerCtx, slug: string, key: string, archivePath: string, opts: { userPicked?: boolean } = {}): Promise<void> {
   return ctx.mutex.run(async () => {
     const mod = ctx.store.getMod(slug, key);
     if (mod === undefined) return;
@@ -119,9 +136,10 @@ export function installArchive(ctx: RunnerCtx, slug: string, key: string, archiv
     }
     ctx.store.updateMod(slug, key, { status: 'installing', error: undefined, progress: undefined });
     try {
-      await extractAndApply(ctx, slug, key, archivePath);
+      await extractAndApply(ctx, slug, key, archivePath, opts.userPicked === true);
     } catch (err) {
-      failMod(ctx, slug, key, `Install failed: ${errorMessage(err)}`, err);
+      if (err instanceof UnsupportedArchiveError) markNeedsRepack(ctx, slug, key, err);
+      else failMod(ctx, slug, key, `Install failed: ${errorMessage(err)}`, err);
     }
   });
 }
