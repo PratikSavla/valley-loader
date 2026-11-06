@@ -1,0 +1,13 @@
+node_modules/
+out/
+dist/
+release/
+.env
+.env.*
+!.env.example
+CLAUDE.local.md
+.DS_Store
+*.log
+tests/fixtures/live/
+*.exe
+*.tsbuildinfo

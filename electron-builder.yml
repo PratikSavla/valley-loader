@@ -1,0 +1,28 @@
+appId: com.pratiksavla.valleyloader
+productName: Valley Loader
+copyright: Copyright © 2026 Pratik Savla. Licensed under the GNU AGPL v3.
+directories:
+  output: release
+  buildResources: resources
+files:
+  - out/**
+  - package.json
+asarUnpack:
+  - node_modules/7zip-bin/**
+  - node_modules/node-unrar-js/**/*.wasm
+afterPack: scripts/after-pack.cjs
+mac:
+  target:
+    - target: dir
+    - target: zip
+  artifactName: Valley-Loader-${version}-${arch}-mac.${ext}
+  category: public.app-category.games
+  identity: null
+protocols:
+  - name: Nexus Mods download link
+    schemes: [nxm]
+extraResources:
+  - from: LICENSE
+    to: LICENSE.txt
+  - from: THIRD_PARTY_NOTICES.md
+    to: THIRD_PARTY_NOTICES.md
