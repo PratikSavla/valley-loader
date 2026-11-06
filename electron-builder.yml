@@ -17,7 +17,9 @@ mac:
     - target: zip
   artifactName: Valley-Loader-${version}-${arch}-mac.${ext}
   category: public.app-category.games
-  identity: null
+  # Ad-hoc signed (not notarized): hardened runtime would need extra entitlements to launch.
+  identity: "-"
+  hardenedRuntime: false
 protocols:
   - name: Nexus Mods download link
     schemes: [nxm]
