@@ -1,0 +1,391 @@
+{
+  "info": {
+    "author": "Lumi",
+    "authorUrl": "https://www.nexusmods.com/users/12345",
+    "name": "Stardew Valley VERY Expanded (fixture)",
+    "description": "Test fixture modelled on a real Stardew Valley collection.",
+    "installInstructions": "Run SMAPI once before installing.",
+    "domainName": "stardewvalley",
+    "gameVersions": [
+      "1.6.15"
+    ]
+  },
+  "mods": [
+    {
+      "name": "SMAPI - Stardew Modding API",
+      "version": "4.3.2",
+      "optional": false,
+      "domainName": "stardewvalley",
+      "source": {
+        "type": "nexus",
+        "modId": 2400,
+        "fileId": 129447,
+        "md5": "274d599072cff3533a43653514a6d98d",
+        "fileSize": 21456789,
+        "logicalFilename": "SMAPI 4.3.2",
+        "updatePolicy": "exact",
+        "tag": "t274d5990"
+      },
+      "author": "Pathoschild",
+      "details": {
+        "type": "",
+        "category": "Modding Tools"
+      },
+      "phase": 0,
+      "instructions": "Install SMAPI manually with its installer before playing."
+    },
+    {
+      "name": "Content Patcher",
+      "version": "2.5.3",
+      "optional": false,
+      "domainName": "stardewvalley",
+      "source": {
+        "type": "nexus",
+        "modId": 1915,
+        "fileId": 128843,
+        "md5": "dc83ed798c44cbaf44ae29c6791bc3be",
+        "fileSize": 412345,
+        "logicalFilename": "Content Patcher 2.5.3",
+        "updatePolicy": "exact",
+        "tag": "tdc83ed79"
+      },
+      "author": "Pathoschild",
+      "details": {
+        "type": "",
+        "category": "Gameplay Mechanics"
+      },
+      "phase": 0
+    },
+    {
+      "name": "SpaceCore",
+      "version": "1.27.0",
+      "optional": false,
+      "domainName": "stardewvalley",
+      "source": {
+        "type": "nexus",
+        "modId": "1348",
+        "fileId": "127755",
+        "md5": "e938c3b11dca791c46c3bf7bc5ab5296",
+        "fileSize": 355120,
+        "logicalFilename": "SpaceCore",
+        "updatePolicy": "exact",
+        "tag": "te938c3b1"
+      },
+      "author": "spacechase0",
+      "details": {
+        "type": "",
+        "category": "Gameplay Mechanics"
+      },
+      "phase": 0
+    },
+    {
+      "name": "Farm Type Manager (FTM)",
+      "version": "1.24.0",
+      "optional": false,
+      "domainName": "stardewvalley",
+      "source": {
+        "type": "nexus",
+        "modId": 3231,
+        "fileId": 126301,
+        "md5": "db9cddd0431170bf854b44310fb38fa7",
+        "fileSize": 254003,
+        "logicalFilename": "Farm Type Manager",
+        "updatePolicy": "exact",
+        "tag": "tdb9cddd0"
+      },
+      "author": "Esca",
+      "details": {
+        "type": "",
+        "category": "Gameplay Mechanics"
+      },
+      "phase": 0
+    },
+    {
+      "name": "VERY Configured",
+      "version": "114.0.0",
+      "optional": false,
+      "domainName": "stardewvalley",
+      "source": {
+        "type": "nexus",
+        "modId": 20870,
+        "fileId": 130022,
+        "md5": "19f876fa0033abae2d3a0d54cbc59924",
+        "fileSize": 88400,
+        "logicalFilename": "VERY Configured",
+        "updatePolicy": "exact",
+        "tag": "t19f876fa"
+      },
+      "author": "Lumi",
+      "details": {
+        "type": "",
+        "category": "Gameplay Mechanics"
+      },
+      "phase": 1
+    },
+    {
+      "name": "Stardew Valley Expanded",
+      "version": "1.15.10",
+      "optional": false,
+      "domainName": "stardewvalley",
+      "source": {
+        "type": "nexus",
+        "modId": 3753,
+        "fileId": 125113,
+        "md5": "543573bd09e83d6b7de652aa7b924f58",
+        "fileSize": 398765432,
+        "logicalFilename": "Stardew Valley Expanded",
+        "updatePolicy": "prefer",
+        "tag": "t543573bd"
+      },
+      "author": "FlashShifter",
+      "details": {
+        "type": "",
+        "category": "Gameplay Mechanics"
+      },
+      "phase": 1
+    },
+    {
+      "name": "[CP] Seasonal Outfits - Slightly Cuter Aesthetic",
+      "version": "2.7.1",
+      "optional": false,
+      "domainName": "stardewvalley",
+      "source": {
+        "type": "nexus",
+        "modId": 5450,
+        "fileId": 118204,
+        "md5": "debff9f23f447529460985ec9743659f",
+        "fileSize": 9876543,
+        "logicalFilename": "Seasonal Outfits",
+        "updatePolicy": "exact",
+        "tag": "tdebff9f2"
+      },
+      "author": "Poltergeister",
+      "details": {
+        "type": "",
+        "category": "Gameplay Mechanics"
+      },
+      "phase": 1,
+      "choices": {
+        "type": "fomod",
+        "options": [
+          {
+            "name": "Main Options",
+            "groups": [
+              {
+                "name": "Hair",
+                "choices": [
+                  {
+                    "name": "Short Hair",
+                    "idx": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "Generic Mod Config Menu",
+      "version": "1.14.1",
+      "optional": true,
+      "domainName": "stardewvalley",
+      "source": {
+        "type": "nexus",
+        "modId": 5098,
+        "fileId": 121500,
+        "md5": "9bd9204aa79f8a8fb9004717c4ba3e91",
+        "fileSize": 183404,
+        "logicalFilename": "Generic Mod Config Menu",
+        "updatePolicy": "exact",
+        "tag": "t9bd9204a"
+      },
+      "author": "spacechase0",
+      "details": {
+        "type": "",
+        "category": "Gameplay Mechanics"
+      },
+      "phase": 1
+    },
+    {
+      "name": "Valley Tweaks (bundled)",
+      "version": "1.0.0",
+      "optional": false,
+      "domainName": "stardewvalley",
+      "source": {
+        "type": "bundle",
+        "fileExpression": "Valley Tweaks-1.0.0",
+        "fileSize": 20480,
+        "updatePolicy": "exact",
+        "tag": "bundleTag01"
+      },
+      "author": "CollectionCurator",
+      "phase": 1
+    },
+    {
+      "name": "Better Crafting Icons",
+      "version": "0.3.0",
+      "optional": false,
+      "domainName": "stardewvalley",
+      "source": {
+        "type": "direct",
+        "url": "https://github.com/example/better-crafting-icons/releases/download/v0.3.0/BetterCraftingIcons.zip",
+        "md5": "c8cdc80fe3f8a20a79505b36ee9e89d4",
+        "fileSize": 51200,
+        "updatePolicy": "exact",
+        "adultContent": false
+      },
+      "author": "example",
+      "phase": 1
+    }
+  ],
+  "modRules": [
+    {
+      "type": "after",
+      "source": {
+        "fileMD5": "19f876fa0033abae2d3a0d54cbc59924",
+        "fileSize": 88400,
+        "logicalFileName": "VERY Configured",
+        "versionMatch": "114.0.0"
+      },
+      "reference": {
+        "repo": {
+          "repository": "nexus",
+          "gameId": "stardewvalley",
+          "modId": "3753",
+          "fileId": "125113"
+        },
+        "versionMatch": "1.15.10",
+        "logicalFileName": "Stardew Valley Expanded"
+      }
+    },
+    {
+      "type": "after",
+      "source": {
+        "fileMD5": "19f876fa0033abae2d3a0d54cbc59924",
+        "fileSize": 88400,
+        "logicalFileName": "VERY Configured",
+        "versionMatch": "114.0.0"
+      },
+      "reference": {
+        "fileMD5": "debff9f23f447529460985ec9743659f",
+        "versionMatch": "2.7.1"
+      }
+    },
+    {
+      "type": "after",
+      "source": {
+        "fileMD5": "19f876fa0033abae2d3a0d54cbc59924",
+        "fileSize": 88400,
+        "logicalFileName": "VERY Configured",
+        "versionMatch": "114.0.0"
+      },
+      "reference": {
+        "tag": "bundleTag01",
+        "fileExpression": "Valley Tweaks-1.0.0",
+        "versionMatch": "1.0.0"
+      }
+    },
+    {
+      "type": "after",
+      "source": {
+        "fileMD5": "19f876fa0033abae2d3a0d54cbc59924",
+        "fileSize": 88400,
+        "logicalFileName": "VERY Configured",
+        "versionMatch": "114.0.0"
+      },
+      "reference": {
+        "logicalFileName": "Generic Mod Config Menu",
+        "versionMatch": "*"
+      }
+    },
+    {
+      "type": "before",
+      "source": {
+        "repo": {
+          "repository": "nexus",
+          "gameId": "stardewvalley",
+          "modId": "3231",
+          "fileId": "126301"
+        },
+        "versionMatch": "1.24.0",
+        "logicalFileName": "Farm Type Manager"
+      },
+      "reference": {
+        "repo": {
+          "repository": "nexus",
+          "gameId": "stardewvalley",
+          "modId": "1348",
+          "fileId": "127755"
+        },
+        "versionMatch": "1.27.0",
+        "logicalFileName": "SpaceCore"
+      }
+    },
+    {
+      "type": "before",
+      "source": {
+        "repo": {
+          "repository": "nexus",
+          "gameId": "stardewvalley",
+          "modId": "3753",
+          "fileId": "125113"
+        },
+        "versionMatch": "1.15.10",
+        "logicalFileName": "Stardew Valley Expanded"
+      },
+      "reference": {
+        "repo": {
+          "repository": "nexus",
+          "gameId": "stardewvalley",
+          "modId": "1915",
+          "fileId": "128843"
+        },
+        "versionMatch": "2.5.3",
+        "logicalFileName": "Content Patcher 2.5.3"
+      }
+    },
+    {
+      "type": "requires",
+      "source": {
+        "repo": {
+          "repository": "nexus",
+          "gameId": "stardewvalley",
+          "modId": "3753",
+          "fileId": "125113"
+        },
+        "versionMatch": "1.15.10",
+        "logicalFileName": "Stardew Valley Expanded"
+      },
+      "reference": {
+        "repo": {
+          "repository": "nexus",
+          "gameId": "stardewvalley",
+          "modId": "3231",
+          "fileId": "126301"
+        },
+        "versionMatch": "1.24.0",
+        "logicalFileName": "Farm Type Manager"
+      }
+    },
+    {
+      "type": "after",
+      "source": {
+        "fileMD5": "c8cdc80fe3f8a20a79505b36ee9e89d4",
+        "fileSize": 51200,
+        "versionMatch": "0.3.0"
+      },
+      "reference": {
+        "fileMD5": "00000000000000000000000000000000",
+        "logicalFileName": "Content Patcher 2.5.3",
+        "versionMatch": "2.5.3"
+      }
+    }
+  ],
+  "collectionConfig": {
+    "recommendNewProfile": true
+  },
+  "unknownTopLevel": {
+    "keep": true
+  }
+}
