@@ -67,6 +67,7 @@ describe('openExternal allowlist', () => {
     'https://stardewvalleywiki.com/Modding:Player_Guide',
     'https://github.com/pratiksavla/valley-loader',
     'https://github.com/pratiksavla/valley-loader/releases',
+    'https://github.com/PratikSavla/valley-loader',
     'https://www.gnu.org/licenses/agpl-3.0.html',
   ])('allows %s', (url) => expect(isAllowedExternalUrl(url)).toBe(true));
 
